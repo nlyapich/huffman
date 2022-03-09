@@ -38,7 +38,8 @@ void Huffman::fillQueue(std::vector<size_t>& frequency, queue_t& queue)
 	{
 		if (frequency[i])
 		{
-			Node::pointer node = std::make_shared<Node>(static_cast<unsigned char>(i), frequency[i]);
+			// Node::pointer node = std::make_shared<Node>(static_cast<unsigned char>(i), frequency[i]);
+			Node::pointer node = new Node(static_cast<unsigned char>(i), frequency[i]);
 			queue.push(node);
 		}
 	}
@@ -54,7 +55,7 @@ void Huffman::buildTree(queue_t& queue)
 		Node::pointer y = queue.top();
 		queue.pop();
 
-		Node::pointer z = std::make_shared<Node>(0, x->getFrequency() + y->getFrequency());
+		Node::pointer z = new Node(0, x->getFrequency() + y->getFrequency());
 
 		z->left = x;
 		z->right = y;
@@ -200,6 +201,8 @@ void Huffman::zip()
 
 	encodeFile(ifs, ofs, frequency, root);
 
+	delete root;
+
   ifs.close();
 	ofs.close();
 };
@@ -226,7 +229,7 @@ Node::pointer Huffman::writeNode(BitStream& bs)
 	{
 		tmp = (tmp << 1) | bs.getNextBit();
 	}
-	Node::pointer node = std::make_shared<Node>(static_cast<unsigned char>(tmp), 0);
+	Node::pointer node = new Node(static_cast<unsigned char>(tmp), 0);
 
 	return node;
 };
@@ -242,10 +245,7 @@ void Huffman::readTree(BitStream& bs, Node::pointer& cur, unsigned int* curCount
 	}
 	else
 	{
-		/*
-			возможна утечка памяти, надо поправить
-		*/
-		cur = std::make_shared<Node>(0, 0);
+		cur = new Node(0, 0);
 
 		if (*curCountUniqueSymbols == 0) return;
 		readTree(bs, cur->left, curCountUniqueSymbols);
@@ -310,6 +310,8 @@ void Huffman::unzip()
 	std::ofstream ofs("unzip" + fileName.substr(0, fileName.size() - std::string(".huf").size()), std::ofstream::out | std::ofstream::binary);
 
 	decodeFile(ofs, root, mod, bs);
+
+	delete root;
 
 	ifs.close();
 	ofs.close();

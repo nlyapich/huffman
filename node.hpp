@@ -8,7 +8,7 @@
 class Node
 {
 public:
-  using pointer = std::shared_ptr<Node>;
+  using pointer = Node*;
 
   pointer left{nullptr};
   pointer right{nullptr};

@@ -3,7 +3,11 @@
 Node::Node() = default;
 Node::Node(unsigned char uch, int f) : uch{uch}, frequency{f} {};
 
-Node::~Node() = default;
+Node::~Node()
+{
+    if (left) delete left;
+    if (right) delete right;
+};
 
 bool Node::isLeaf() const
 {
