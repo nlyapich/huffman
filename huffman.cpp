@@ -209,14 +209,14 @@ void Huffman::zip()
 
 unsigned char Huffman::readMod(BitStream& bs)
 {
-	char mod;
+	char mod = 0;
 	bs >> mod;
 	return static_cast<unsigned char>(mod);
 };
 
 unsigned int Huffman::readCountUniqueSymbols(BitStream& bs)
 {
-	unsigned int countUniqueSymbols;
+	unsigned int countUniqueSymbols = 0;
 	bs >> countUniqueSymbols;
 
 	return countUniqueSymbols;
