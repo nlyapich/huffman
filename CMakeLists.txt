@@ -15,17 +15,17 @@ add_compile_options(
 )
 
 set(Headers
-	bitstream.hpp
-	huffman.hpp
-	node.hpp
+	./src/bitstream.hpp
+	./src/huffman.hpp
+	./src/node.hpp
 )
 set(Sources
-	bitstream.cpp
-	huffman.cpp
-	node.cpp
+	./src/bitstream.cpp
+	./src/huffman.cpp
+	./src/node.cpp
 )
 
-add_executable(${This} main.cpp ${Sources} ${Headers})
+add_executable(${This} ./src/main.cpp ${Headers} ${Sources})
 
 find_package(Boost COMPONENTS program_options REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
