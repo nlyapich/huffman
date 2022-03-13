@@ -34,7 +34,7 @@ std::vector<size_t> Huffman::getFrequency(std::ifstream& ifs)
 
 void Huffman::fillQueue(std::vector<size_t>& frequency, queue_t& queue)
 {
-	for (int i = 0; i < frequency.size(); ++i)
+	for (unsigned int i = 0; i < (frequency.size()); ++i)
 	{
 		if (frequency[i])
 		{
