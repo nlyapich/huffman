@@ -4,7 +4,7 @@
 #define SIZE_CHAR 256
 #define SIZE_BYTE 8
 
-Huffman::Huffman(const std::string fileName) : fileName{fileName}{};
+Huffman::Huffman(const std::string fileName, const std::string filePath) : fileName{fileName}, filePath{filePath}{};
 Huffman::~Huffman() = default;
 
 std::ifstream::pos_type Huffman::getSize(const std::string& fn)
@@ -174,13 +174,13 @@ void Huffman::encodeFile(std::ifstream& ifs, std::ofstream& ofs, const std::vect
 
 void Huffman::zip()
 {
-  std::ifstream ifs(fileName, std::ifstream::binary);
+  std::ifstream ifs(filePath + fileName, std::ifstream::binary);
 
   /*
     если размер файла сильно большой, int не потянет, будет переполнение;
     надо переделать обработку ошибок открытия файла
   */
-  if (getSize(fileName) < 0 || !ifs)
+  if (getSize(filePath + fileName) < 0 || !ifs)
 	{
 		throw std::ifstream::failure("Error with opening file: zip()");
 	}
@@ -195,8 +195,8 @@ void Huffman::zip()
   Node::pointer root = queue.top();
   queue.pop();
 
-  ifs = std::ifstream(fileName, std::ifstream::binary);
-	std::ofstream ofs(fileName + ".huf", std::ofstream::out | std::ofstream::binary);
+  ifs = std::ifstream(filePath + fileName, std::ifstream::binary);
+	std::ofstream ofs(filePath + fileName + ".huf", std::ofstream::out | std::ofstream::binary);
 	//std::ofstream::out | std::ofstream::in | std::ofstream::binary /* for adding new byte in middle of file */
 
 	encodeFile(ifs, ofs, frequency, root);
@@ -294,7 +294,7 @@ void Huffman::decodeFile(std::ofstream& ofs, const Node::pointer& root, unsigned
 
 void Huffman::unzip()
 {
-	std::ifstream ifs(fileName, std::ifstream::binary);
+	std::ifstream ifs(filePath + fileName, std::ifstream::binary);
 
 	/*
 		сделать проверку на корректность открытия файла
@@ -307,7 +307,7 @@ void Huffman::unzip()
 	unsigned int countUniqueSymbols = readCountUniqueSymbols(bs);
 	Node::pointer root = readTree(bs, countUniqueSymbols);
 
-	std::ofstream ofs("unzip" + fileName.substr(0, fileName.size() - std::string(".huf").size()), std::ofstream::out | std::ofstream::binary);
+	std::ofstream ofs(filePath + "unzip" + fileName.substr(0, fileName.size() - std::string(".huf").size()), std::ofstream::out | std::ofstream::binary);
 
 	decodeFile(ofs, root, mod, bs);
 

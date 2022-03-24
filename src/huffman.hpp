@@ -14,13 +14,14 @@ using queue_t = std::priority_queue<Node::pointer, std::vector<Node::pointer>, L
 class Huffman
 {
 public:
-  Huffman(const std::string fileName);
+  Huffman(const std::string fileName, const std::string filePath = "");
   virtual ~Huffman();
 
   void zip();
   void unzip();
 private:
   const std::string fileName;
+  const std::string filePath;
 
   std::ifstream::pos_type getSize(const std::string& fn);
 
