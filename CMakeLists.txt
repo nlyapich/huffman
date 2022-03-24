@@ -14,6 +14,8 @@ add_compile_options(
 	-O3
 )
 
+enable_testing()
+
 set(Headers
 	./src/bitstream.hpp
 	./src/huffman.hpp
@@ -30,3 +32,5 @@ add_executable(${This} ./src/main.cpp ${Headers} ${Sources})
 find_package(Boost COMPONENTS program_options REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 target_link_libraries(${This} ${Boost_LIBRARIES})
+
+add_subdirectory(tests)
