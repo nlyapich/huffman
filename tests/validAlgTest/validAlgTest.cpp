@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <boost/filesystem.hpp>
 #include <cstdio>
 #include <cstring>
 #include <fstream>
@@ -64,17 +65,23 @@ TEST(ValidAlgTest, dataLossCheckTest)
 {
   auto zipUnzipData = [](const std::string& fileName, const std::string& filePath)
   {
-    Huffman huffmanZip(fileName, filePath);
+    const std::string copyFile = filePath + "copy" + fileName;
+    boost::filesystem::copy_file(
+        filePath + fileName,
+        copyFile
+    );
+
+    Huffman huffmanZip(copyFile);
     huffmanZip.zip();
 
-    Huffman huffmanUnzip(fileName + ".huf", filePath);
+    Huffman huffmanUnzip(copyFile + ".huf");
     huffmanUnzip.unzip();
 
-    EXPECT_TRUE(lessSizeFile(filePath + fileName + ".huf", filePath + fileName));
-    EXPECT_TRUE(compareDataFiles(filePath + "unzip" + fileName, filePath + fileName));
+    EXPECT_TRUE(lessSizeFile(copyFile + ".huf", filePath + fileName));
+    EXPECT_TRUE(compareDataFiles(copyFile, filePath + fileName));
 
-    remove((filePath + fileName + ".huf").c_str());
-    remove((filePath + "unzip" + fileName).c_str());
+    remove((copyFile + ".huf").c_str());
+    remove((copyFile).c_str());
   };
 
   const std::string pathTestFiles("./testTextFiles/");
@@ -89,5 +96,4 @@ TEST(ValidAlgTest, dataLossCheckTest)
   {
     zipUnzipData(fileName, pathTestFiles);
   }
-
 }

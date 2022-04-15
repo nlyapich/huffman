@@ -4,7 +4,7 @@
 #define SIZE_CHAR 256
 #define SIZE_BYTE 8
 
-Huffman::Huffman(const std::string fileName, const std::string filePath) : fileName{fileName}, filePath{filePath}{};
+Huffman::Huffman(const std::string filePath) : filePath{filePath}{};
 Huffman::~Huffman() = default;
 
 std::ifstream::pos_type Huffman::getSize(const std::string& fn)
@@ -38,7 +38,6 @@ void Huffman::fillQueue(std::vector<size_t>& frequency, queue_t& queue)
 	{
 		if (frequency[i])
 		{
-			// Node::pointer node = std::make_shared<Node>(static_cast<unsigned char>(i), frequency[i]);
 			Node::pointer node = new Node(static_cast<unsigned char>(i), frequency[i]);
 			queue.push(node);
 		}
@@ -77,9 +76,7 @@ void Huffman::makeCode(const Node::pointer& node, std::vector<std::string>& code
 
 	if (!node->left && !node->right)
 	{
-		// node->code(str);
 		codes[node->getByte()] = str;
-		// std::cout << "leaf: " << *node << " code: " << node->code() << std::endl;
 	}
 };
 
@@ -97,9 +94,7 @@ void Huffman::writeZipCode(std::ifstream& ifs, BitStream& bs, const std::vector<
     {
       bs.setNextBit(i - '0');
     }
-    // std::cout << codes[static_cast<unsigned char>(ch)] + '|';
   }
-  // std::cout << std::endl;
 };
 
 void Huffman::writeTree(BitStream& bs, const Node::pointer& node)
@@ -141,8 +136,7 @@ void Huffman::writeCountUniqueSymbols(BitStream& bs, const std::vector<size_t>& 
 void Huffman::writeMod(std::ofstream& ofs, unsigned char mod)
 {
 	ofs.seekp(0);
-	ofs << static_cast<char>(mod); // возможно кастовать не надо
-	//встать в начало файл и записать один байт: mod (не забыть поправить открытие файла в zip())
+	ofs << static_cast<char>(mod);
 };
 
 void Huffman::encodeFile(std::ifstream& ifs, std::ofstream& ofs, const std::vector<size_t>& frequency, const Node::pointer& root)
@@ -174,13 +168,9 @@ void Huffman::encodeFile(std::ifstream& ifs, std::ofstream& ofs, const std::vect
 
 void Huffman::zip()
 {
-  std::ifstream ifs(filePath + fileName, std::ifstream::binary);
+  std::ifstream ifs(filePath, std::ifstream::binary);
 
-  /*
-    если размер файла сильно большой, int не потянет, будет переполнение;
-    надо переделать обработку ошибок открытия файла
-  */
-  if (getSize(filePath + fileName) < 0 || !ifs)
+  if (getSize(filePath) < 0 || !ifs)
 	{
 		throw std::ifstream::failure("Error with opening file: zip()");
 	}
@@ -195,9 +185,8 @@ void Huffman::zip()
   Node::pointer root = queue.top();
   queue.pop();
 
-  ifs = std::ifstream(filePath + fileName, std::ifstream::binary);
-	std::ofstream ofs(filePath + fileName + ".huf", std::ofstream::out | std::ofstream::binary);
-	//std::ofstream::out | std::ofstream::in | std::ofstream::binary /* for adding new byte in middle of file */
+  ifs = std::ifstream(filePath, std::ifstream::binary);
+	std::ofstream ofs(filePath + ".huf", std::ofstream::out | std::ofstream::binary);
 
 	encodeFile(ifs, ofs, frequency, root);
 
@@ -271,9 +260,6 @@ void Huffman::decodeFile(std::ofstream& ofs, const Node::pointer& root, unsigned
 {
 	Node::pointer curNode = root;
 
-	/*
-		may be must to add && mod != 0
-	*/
 	while(!(bs.isLastByte() && (bs.getNumberOfCurBit() == SIZE_BYTE - static_cast<unsigned int>(mod))))
 	{
 		int status;
@@ -294,7 +280,7 @@ void Huffman::decodeFile(std::ofstream& ofs, const Node::pointer& root, unsigned
 
 void Huffman::unzip()
 {
-	std::ifstream ifs(filePath + fileName, std::ifstream::binary);
+	std::ifstream ifs(filePath, std::ifstream::binary);
 
 	/*
 		сделать проверку на корректность открытия файла
@@ -307,7 +293,7 @@ void Huffman::unzip()
 	unsigned int countUniqueSymbols = readCountUniqueSymbols(bs);
 	Node::pointer root = readTree(bs, countUniqueSymbols);
 
-	std::ofstream ofs(filePath + "unzip" + fileName.substr(0, fileName.size() - std::string(".huf").size()), std::ofstream::out | std::ofstream::binary);
+	std::ofstream ofs(filePath.substr(0, fileName.size() - std::string(".huf").size()), std::ofstream::out | std::ofstream::binary);
 
 	decodeFile(ofs, root, mod, bs);
 

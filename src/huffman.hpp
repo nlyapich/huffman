@@ -14,7 +14,7 @@ using queue_t = std::priority_queue<Node::pointer, std::vector<Node::pointer>, L
 class Huffman
 {
 public:
-  Huffman(const std::string fileName, const std::string filePath = "");
+  Huffman(const std::string filePath);
   virtual ~Huffman();
 
   void zip();

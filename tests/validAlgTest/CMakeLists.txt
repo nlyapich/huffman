@@ -26,7 +26,10 @@ set(Sources
 set(ValidAlgTest validAlgTest)
 
 add_executable(${ValidAlgTest} validAlgTest.cpp ${Headers} ${Sources})
-target_link_libraries(${ValidAlgTest} PUBLIC ${LibTest})
+
+find_package(Boost COMPONENTS filesystem REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
+target_link_libraries(${ValidAlgTest} PUBLIC ${Boost_LIBRARIES} ${LibTest})
 
 file(MAKE_DIRECTORY DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/testTextFiles/)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/testTextFiles/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/testTextFiles/)
