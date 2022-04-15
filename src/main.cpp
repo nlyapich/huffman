@@ -1,7 +1,9 @@
 #include <boost/program_options.hpp>
 #include <iostream>
+#include <QApplication>
 
 #include "huffman.hpp"
+#include "./gui/mainwindow.hpp"
 
 namespace opt = boost::program_options;
 
@@ -25,7 +27,7 @@ int main(int argc, char *argv[])
 
 		return 0;
 	}
-	if (vm.count("compress"))
+	else if (vm.count("compress"))
 	{
 		std::cout << "compress: " << vm["compress"].as<std::string>() << std::endl;
 		Huffman huffmanZip{vm["compress"].as<std::string>()};
@@ -33,13 +35,20 @@ int main(int argc, char *argv[])
 
 		return 0;
 	}
-	if (vm.count("decompress"))
+	else if (vm.count("decompress"))
 	{
 		std::cout << "decompress: " << vm["decompress"].as<std::string>() << std::endl;
 		Huffman huffmanUnzip{vm["decompress"].as<std::string>()};
 		huffmanUnzip.unzip();
 
 		return 0;
+	}
+	else
+	{
+		QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+    return a.exec();
 	}
 
 	return 0;
