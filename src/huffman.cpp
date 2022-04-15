@@ -260,6 +260,8 @@ void Huffman::decodeFile(std::ofstream& ofs, const Node::pointer& root, unsigned
 {
 	Node::pointer curNode = root;
 
+	BitStream bs_output{&ofs, BUF_SIZE};
+
 	while(!(bs.isLastByte() && (bs.getNumberOfCurBit() == SIZE_BYTE - static_cast<unsigned int>(mod))))
 	{
 		int status;
@@ -269,13 +271,12 @@ void Huffman::decodeFile(std::ofstream& ofs, const Node::pointer& root, unsigned
 
 		if (curNode->isLeaf())
 		{
-			/*
-			тоже сделать буфер для вывода
-			*/
-			ofs << curNode->getByte();
+			bs_output << static_cast<char>(curNode->getByte());
 			curNode = root;
 		}
 	}
+
+	bs_output.write();
 };
 
 void Huffman::unzip()
