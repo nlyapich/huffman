@@ -4,7 +4,7 @@
 #define SIZE_CHAR 256
 #define SIZE_BYTE 8
 
-Huffman::Huffman(const std::string filePath) : filePath{filePath}{};
+Huffman::Huffman(std::string filePath) : filePath{filePath}{};
 Huffman::~Huffman() = default;
 
 std::ifstream::pos_type Huffman::getSize(const std::string& fn)
