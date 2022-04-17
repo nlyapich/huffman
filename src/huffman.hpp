@@ -20,7 +20,6 @@ public:
   void zip();
   void unzip();
 private:
-  const std::string fileName;
   const std::string filePath;
 
   std::ifstream::pos_type getSize(const std::string& fn);

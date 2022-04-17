@@ -294,7 +294,7 @@ void Huffman::unzip()
 	unsigned int countUniqueSymbols = readCountUniqueSymbols(bs);
 	Node::pointer root = readTree(bs, countUniqueSymbols);
 
-	std::ofstream ofs(filePath.substr(0, fileName.size() - std::string(".huf").size()), std::ofstream::out | std::ofstream::binary);
+	std::ofstream ofs(filePath.substr(0, filePath.size() - std::string(".huf").size()), std::ofstream::out | std::ofstream::binary);
 
 	decodeFile(ofs, root, mod, bs);
 
