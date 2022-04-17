@@ -68,7 +68,19 @@ bool MainWindow::formatHuf(const std::string& filePath)
 
 void MainWindow::on_pushButtonZip_clicked()
 {
-  ui->progressBar->setValue(0);
+  class ProgressBar: public InterfaceProgressBar
+  {
+  public:
+    ProgressBar(QProgressBar* progressBar) : progressBar{progressBar}{};
+    ~ProgressBar(){};
+
+    void setValue(int value) override
+    {
+      progressBar->setValue(value);
+    };
+  private:
+    QProgressBar* progressBar;
+  };
 
   try
   {
@@ -76,19 +88,20 @@ void MainWindow::on_pushButtonZip_clicked()
 
     Huffman huffman(filePath);
 
+    ProgressBar progressBar(ui->progressBar);
+
     if (!formatHuf(filePath))
     {
       ui->statusbar->showMessage("Zipping file...");
-      huffman.zip();
+      huffman.zip(&progressBar);
     }
     else
     {
       ui->statusbar->showMessage("Unzipping file...");
-      huffman.unzip();
+      huffman.unzip(&progressBar);
     }
 
     ui->statusbar->showMessage("Successfully");
-    ui->progressBar->setValue(100);
   }
   catch (...)
   {

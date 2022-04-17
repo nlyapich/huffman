@@ -11,14 +11,22 @@
 
 using queue_t = std::priority_queue<Node::pointer, std::vector<Node::pointer>, LowestPriority>;
 
+class InterfaceProgressBar
+{
+public:
+  virtual ~InterfaceProgressBar(){};
+
+  virtual void setValue(int) = 0;
+};
+
 class Huffman
 {
 public:
   Huffman(std::string filePath);
   virtual ~Huffman();
 
-  void zip();
-  void unzip();
+  void zip(InterfaceProgressBar* progressBar = nullptr);
+  void unzip(InterfaceProgressBar* progressBar = nullptr);
 private:
   const std::string filePath;
 

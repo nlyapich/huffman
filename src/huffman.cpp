@@ -166,17 +166,23 @@ void Huffman::encodeFile(std::ifstream& ifs, std::ofstream& ofs, const std::vect
 	writeMod(ofs, mod);
 };
 
-void Huffman::zip()
+void Huffman::zip(InterfaceProgressBar* progressBar)
 {
-  std::ifstream ifs(filePath, std::ifstream::binary);
+	if (progressBar)
+		progressBar->setValue(0);
 
-  if (getSize(filePath) < 0 || !ifs)
+	std::ifstream ifs(filePath, std::ifstream::binary);
+
+  if (!ifs || !ifs.is_open())
 	{
 		throw std::ifstream::failure("Error with opening file: zip()");
 	}
 
   std::vector<size_t> frequency = getFrequency(ifs);
   ifs.close();
+
+	if (progressBar)
+		progressBar->setValue(40);
 
 	queue_t queue;
 	fillQueue(frequency, queue);
@@ -185,10 +191,21 @@ void Huffman::zip()
   Node::pointer root = queue.top();
   queue.pop();
 
+	if (progressBar)
+		progressBar->setValue(50);
+
   ifs = std::ifstream(filePath, std::ifstream::binary);
+	if (!ifs || !ifs.is_open())
+	{
+		throw std::ifstream::failure("Error with opening file: zip()");
+	}
+	
 	std::ofstream ofs(filePath + ".huf", std::ofstream::out | std::ofstream::binary);
 
 	encodeFile(ifs, ofs, frequency, root);
+
+	if (progressBar)
+		progressBar->setValue(100);
 
 	delete root;
 
@@ -279,13 +296,15 @@ void Huffman::decodeFile(std::ofstream& ofs, const Node::pointer& root, unsigned
 	bs_output.write();
 };
 
-void Huffman::unzip()
+void Huffman::unzip(InterfaceProgressBar* progressBar)
 {
-	std::ifstream ifs(filePath, std::ifstream::binary);
+	if (progressBar)
+		progressBar->setValue(0);
 
-	/*
-		сделать проверку на корректность открытия файла
-	*/
+	std::ifstream ifs(filePath, std::ifstream::binary);
+	if (!ifs || !ifs.is_open())
+		throw std::ifstream::failure("Error with opening file: unzip()");
+
 	BitStream bs{&ifs, BUF_SIZE};
 	bs.read();
 
@@ -294,9 +313,15 @@ void Huffman::unzip()
 	unsigned int countUniqueSymbols = readCountUniqueSymbols(bs);
 	Node::pointer root = readTree(bs, countUniqueSymbols);
 
+	if (progressBar)
+		progressBar->setValue(20);
+
 	std::ofstream ofs(filePath.substr(0, filePath.size() - std::string(".huf").size()), std::ofstream::out | std::ofstream::binary);
 
 	decodeFile(ofs, root, mod, bs);
+
+	if (progressBar)
+		progressBar->setValue(100);
 
 	delete root;
 
