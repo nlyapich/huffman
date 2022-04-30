@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sudo apt-get update
+
 sudo apt-get -y install libboost-all-dev
 
 sudo apt-get -y install cmake
