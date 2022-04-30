@@ -86,4 +86,4 @@ $ sudo ln -s /usr/lib/libgtest_main.a /usr/local/lib/googletest/libgtest_main.a
 * [Wikipedia](https://en.wikipedia.org/wiki/Huffman_coding)
 
 #### License
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
