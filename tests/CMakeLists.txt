@@ -5,13 +5,18 @@ set(CMAKE_CXX_COMPILER clang++)
 
 enable_testing()
 
-find_package(GTest REQUIRED)
-include_directories(${GTEST_INCLUDE_DIRS})
+find_package(GTest QUIET)
 
-set(LibTest PUBLIC
-  gtest
-	gtest_main
-  pthread
-)
+if (GTest_FOUND)
+  include_directories(${GTEST_INCLUDE_DIRS})
 
-add_subdirectory(validAlgTest)
+  set(LibTest PUBLIC
+    gtest
+  	gtest_main
+    pthread
+  )
+
+  add_subdirectory(validAlgTest)
+else ()
+  message("Testing not included, because GTest not found")
+endif()

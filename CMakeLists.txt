@@ -18,8 +18,6 @@ add_compile_options(
 	-O3
 )
 
-enable_testing()
-
 set(Headers
 	./src/bitstream.hpp
 	./src/huffman.hpp
@@ -45,4 +43,7 @@ target_link_libraries(${This} ${Boost_LIBRARIES})
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 target_link_libraries(${This} Qt5::Widgets)
 
-add_subdirectory(tests)
+if (BUILD_TESTING)
+	enable_testing()
+	add_subdirectory(tests)
+endif()
