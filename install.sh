@@ -1,8 +1,10 @@
 #!/bin/bash
 
-sudo apt-get install libboost-all-dev
+sudo apt-get -y install libboost-all-dev
 
-sudo apt-get install qt5-default
+sudo apt-get -y install cmake
+
+sudo apt-get -y install qt5-default
 
 if ! [ -d ./build]; then
   rm -R ./build
